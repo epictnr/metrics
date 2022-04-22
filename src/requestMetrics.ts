@@ -1,17 +1,20 @@
 import onFinished from 'on-finished'
 import { Metrics } from './metrics'
 import { Histogram, Counter } from 'prom-client'
-import { Response, Request } from 'express'
+import { Request, Response } from 'express'
 
 export interface RequestMetricsParams {
   name: string
 }
 
-export function createRequestMetrics (metrics: Metrics) {
+type CallbackRequestHandler = (request: Request, response: Response) => void
+export type MeasurableCallbackRequestHandler = (action: CallbackRequestHandler, params: RequestMetricsParams) => CallbackRequestHandler
+
+export function createRequestMetrics (metrics: Metrics): MeasurableCallbackRequestHandler {
   let duration: Histogram
   let errors: Counter
 
-  return (action: Function, params: RequestMetricsParams) => {
+  return (action: CallbackRequestHandler, params: RequestMetricsParams): CallbackRequestHandler => {
     const observeRequestTime = () => {
       const methodName = params.name
 

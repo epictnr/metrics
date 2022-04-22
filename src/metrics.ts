@@ -12,7 +12,10 @@ import fetch from 'node-fetch'
 import express, { Request, Response, Router } from 'express'
 import expressRouter from 'express-promise-router'
 import { Logger } from 'winston'
-import { createRequestMetrics } from './requestMetrics'
+import {
+  createRequestMetrics,
+  MeasurableCallbackRequestHandler,
+} from './requestMetrics'
 import { PrometheusAggregator } from './prometheusAggregator'
 
 export interface Config {
@@ -113,7 +116,7 @@ export class Metrics {
             {
               method: 'get',
               timeout: aggregateTimeout,
-            }
+            },
           )
           const responseMetrics = await response.text()
 
@@ -144,7 +147,7 @@ export class Metrics {
     return new Histogram(configuration)
   }
 
-  createRequestMetrics () {
+  createRequestMetrics (): MeasurableCallbackRequestHandler {
     return createRequestMetrics(this)
   }
 
@@ -152,7 +155,7 @@ export class Metrics {
     this.interval && clearInterval(this.interval)
   }
 
-  pushMetrics () {
+  pushMetrics (): void {
     this.interval = setInterval(() => {
       this.prometheusAggregator && this.prometheusAggregator.sendMetrics(register.metrics())
     }, this.pushMetricsInterval)

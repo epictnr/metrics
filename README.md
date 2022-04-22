@@ -71,8 +71,8 @@ paths:
                 api_process_cpu_user_seconds_total 0.6500000000000001 1551965298565
 ```
 
-### How to publish::
+### How to publish:
 
-```bash
-npm pub
+```console
+$ npm pub
 ```
