@@ -1,16 +1,11 @@
-epictnr metrics
+Epictnr Metrics 🪣
 ======
 
-Сбор метрик в формате prometheus с несольких node инстансов
+Collect metrics from many NodeJS instances
 
-### Для публикации пакета:
+### How to use
 
-```bash
-npm pub
-```
-
-
-### Init example:
+##### Init example:
 
 ```js
 const acmeMetrics = require('@epictnr/metrics')
@@ -20,7 +15,7 @@ const metricsConfig = {
   logger: logger,
   port: 8080,
   aggregateHosts: [
-    'acme-service-sync-spendings-worker',
+    'acme-service-sync-spending-worker',
     'acme-service-webhooks'
   ],
   aggregateTimeout: 2000, //ms
@@ -30,7 +25,7 @@ const metricsConfig = {
 const metrics = acmeMetrics(metricsConfig)
 ```
 
-### Api worker:
+##### Api worker:
 
 ```js
 const metrics = require('../app/metrics')
@@ -44,7 +39,7 @@ process.on('SIGINT', () => {
 })
 ```
 
-### Other workers:
+##### Other workers:
 
 ```js
 const metrics = require('../app/metrics')
@@ -56,18 +51,26 @@ process.on('SIGINT', () => {
 })
 ```
 
-### Raml schema:
+##### OpenApi schema:
 
 ```bash
-/metrics:
-  get:
-    description: Get application metrics
-    body:
-      text/plain:
-        example: |
-          # HELP api_process_cpu_user_seconds_total Total user CPU time spent in seconds.
-          # TYPE api_process_cpu_user_seconds_total counter
-          api_process_cpu_user_seconds_total 0.6500000000000001 1551965298565
-    responses:
-      200:
+paths:
+  /metrics:
+    get:
+      summary: Get application metrics
+      responses:
+        '200':
+          description: Application metrics OpenMetrics\Prometheus format
+          content:
+            text/plain:
+              example:
+                # HELP api_process_cpu_user_seconds_total Total user CPU time spent in seconds.
+                # TYPE api_process_cpu_user_seconds_total counter
+                api_process_cpu_user_seconds_total 0.6500000000000001 1551965298565
+```
+
+### How to publish::
+
+```bash
+npm pub
 ```
