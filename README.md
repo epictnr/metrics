@@ -1,7 +1,7 @@
 Epictnr Metrics 🪣
 ======
 
-Collect metrics from many NodeJS instances
+Collect metrics (OpenMetrics\Prometheus) from many NodeJS instances
 
 ### How to use
 
