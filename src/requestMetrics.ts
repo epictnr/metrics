@@ -53,7 +53,7 @@ export function createRequestMetrics (metrics: Metrics): MeasurableCallbackReque
           })
         }
 
-        if (response.statusCode === 500) {
+        if (metrics.isResponseCodeError(response.statusCode)) {
           errors.inc({ 'route_name': methodName })
         }
       }

@@ -14,7 +14,7 @@ const acmeMetrics = require('@epictnr/metrics')
 const logger = require('../logger')
 
 const metricsConfig = {
-  logger: logger,
+  serviceName: 'testService',
   port: 8080,
   aggregateHosts: [
     'acme-service-sync-spending-worker',
@@ -24,7 +24,7 @@ const metricsConfig = {
   collectDefaultMetricsInterval: 5000 // ms
 }
 
-const metrics = acmeMetrics(metricsConfig)
+const metrics = acmeMetrics(metricsConfig, logger)
 ```
 
 ##### Api worker:

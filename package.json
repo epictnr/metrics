@@ -1,6 +1,6 @@
 {
   "name": "@epictnr/metrics",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Collect metrics (Prometheus) from many NodeJS instances",
   "main": "build/metrics.js",
   "types": "build/metrics.d.ts",

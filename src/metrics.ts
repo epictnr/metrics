@@ -18,6 +18,8 @@ import {
 } from './requestMetrics'
 import { PrometheusAggregator } from './prometheusAggregator'
 
+export type ErrorCodeList = Array<number>
+
 export interface Config {
   port: number
   collectDefaultMetricsInterval: number
@@ -26,6 +28,7 @@ export interface Config {
   serviceName: string
   prometheusAggregatorUrl?: string
   pushMetricsInterval?: number
+  errorResponseCode?: ErrorCodeList|number
   debug?: boolean
 }
 
@@ -39,8 +42,8 @@ export class Metrics {
   private logger: Logger
   private prometheusAggregator?: PrometheusAggregator
   private pushMetricsInterval: number = 5000
-  // private interval?: NodeJS.Timeout // ??!!
-  private interval
+  private errorResponseCode: ErrorCodeList = [500]
+  private interval?: NodeJS.Timer
 
   constructor (config: Config, logger: Logger) {
     this.port = config.port
@@ -52,6 +55,12 @@ export class Metrics {
 
     if (config.pushMetricsInterval) {
       this.pushMetricsInterval = config.pushMetricsInterval
+    }
+
+    if (config.errorResponseCode) {
+      this.errorResponseCode = config.errorResponseCode instanceof Array
+        ? config.errorResponseCode
+        : [config.errorResponseCode]
     }
 
     if (config.prometheusAggregatorUrl) {
@@ -149,6 +158,10 @@ export class Metrics {
 
   createRequestMetrics (): MeasurableCallbackRequestHandler {
     return createRequestMetrics(this)
+  }
+
+  isResponseCodeError (code: number): boolean {
+    return this.errorResponseCode.includes(code)
   }
 
   stop (): void {
